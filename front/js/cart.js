@@ -145,13 +145,15 @@ function deleteItem() {
 
       let foundProduct = saveProducts.find(element => element.id == productId && element.color == productColor)
 
+      let indexProduct = saveProducts.indexOf(foundProduct)
 
-      saveProducts.splice(foundProduct, 1) // Permet de supprimer une valeur de notre tableau //
+      saveProducts.splice(indexProduct, 1) // Permet de supprimer une valeur de notre tableau //
 
       localStorage.setItem("product", JSON.stringify(saveProducts))
 
       console.log(saveProducts)
       console.log(foundProduct)
+
 
       article.parentElement.removeChild(article) // Suprimer le DOM
 
