@@ -9,21 +9,21 @@ fetch("http://localhost:3000/api/products") // Récupération de l'API//
 
 
 
-function productsCart(index) {
+function productsCart(product) {
 
   let saveProducts = JSON.parse(localStorage.getItem("product")); //Récupération du LocalStorage // 
 
   for (article of saveProducts) {
 
     //Mise en lien du tableau de l'API et du tableau du LocalStorage //
-    for (i = 0; i < index.length; i++) {
+    for (i = 0; i < product.length; i++) {
 
-      if (article.id == index[i]._id) {
+      if (article.id == product[i]._id) {
 
-        article.price = index[i].price;
-        article.name = index[i].name;
-        article.image = index[i].imageUrl;
-        article.alt = index[i].altTxt;
+        article.price = product[i].price;
+        article.name = product[i].name;
+        article.image = product[i].imageUrl;
+        article.alt = product[i].altTxt;
       }
     }
   }
@@ -62,7 +62,7 @@ function createProducts(product) {
         </div>
       </div>
     </div>
-  </article>`)
+  </article>`);
 
 }
 
@@ -131,25 +131,31 @@ function valuePriceTotal(param) {
 function deleteItem() {
 
   let deleteProduct = document.querySelectorAll(".deleteItem");
-  let changeQuantity = document.querySelectorAll(".cart__item")
 
   deleteProduct.forEach((element) => {
 
-    element.addEventListener("click", (param) => {
+    element.addEventListener("click", () => {
 
       let article = element.closest("article")
-
       let productId = article.dataset.id;
-      console.log(productId)
+      let productColor = article.dataset.color;
 
       let saveProducts = JSON.parse(localStorage.getItem("product"));
 
 
+      let foundProduct = saveProducts.find(element => element.id == productId && element.color == productColor)
 
-      /*saveProducts.splice(param, 1)*/ // Permet de supprimer une valeur de notre tableau //
+
+      saveProducts.splice(foundProduct, 1) // Permet de supprimer une valeur de notre tableau //
 
       localStorage.setItem("product", JSON.stringify(saveProducts))
-      console.log(param)
+
+      console.log(saveProducts)
+      console.log(foundProduct)
+
+      article.parentElement.removeChild(article) // Suprimer le DOM
+
+
       /*location.reload()*/
     });
   });
