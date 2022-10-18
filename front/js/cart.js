@@ -33,7 +33,7 @@ function productsCart(product) {
 
 
   } else {
-    document.querySelector(".cartAndFormContainer").innerHTML = "<h1> Votre Panier est vide <br> Veillez retourner sur la page d'Acceuil</h1>"
+    document.querySelector(".cartAndFormContainer").innerHTML = "<h1> Votre Panier est vide <br> Veillez retourner sur la page <a href ='index.html'>d'Acceuil</a></h1>"
   }
   createProducts(saveProducts)
   changeValueQuantity()
