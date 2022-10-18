@@ -14,7 +14,7 @@ function productsCart(product) {
   let saveProducts = JSON.parse(localStorage.getItem("product")); //Récupération du LocalStorage // 
 
 
-  if (saveProducts != null) {
+  if (saveProducts != 0) {
 
     for (article of saveProducts) {
 
@@ -98,6 +98,9 @@ function changeValueQuantity() {
         }
       }
       /*location.reload()*/
+      console.log(saveProducts)
+
+
     });
   });
 }
@@ -347,15 +350,15 @@ btn_cart.addEventListener("click", (e) => {
       .then(function (data) {
         console.log("data", data)
 
-        let localStorageData = localStorage.getItem("test")
-        let listProduct = JSON.parse(localStorageData)
+        let localStorageData = localStorage.getItem("nbOrderId")
+        let listOrderId = JSON.parse(localStorageData)
 
-        if (listProduct == null) {
-          listProduct = [];
-          listProduct.push(data.orderId);
+        if (listOrderId == null) {
+          listOrderId = [];
+          listOrderId.push(data.orderId);
         }
 
-        localStorage.setItem("test", JSON.stringify(listProduct))
+        localStorage.setItem("nbOrderId", JSON.stringify(listOrderId))
       })
 
     document.location.href = "confirmation.html";
