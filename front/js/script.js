@@ -16,7 +16,10 @@ function getInitialData(url) {
 
             }
 
-        });
+        })
+        .catch(function () {
+            document.querySelector(".titles").innerHTML = "<h1> Erreur ! <br>Avez vous bien lancé le serveur local ? </h1>";
+        })
 }
 
 

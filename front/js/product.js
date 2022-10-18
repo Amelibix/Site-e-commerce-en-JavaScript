@@ -94,9 +94,6 @@ btn_Ajout.addEventListener("click", () => {
         newDiv.style.padding = "10px 0";
         newDiv.style.color = "black";
         newDiv.style.visibility = "visible";
-        /*newDiv.style.background = "green";*/
-
-
         setTimeout(function () {
             newDiv.innerHTML = "";
 
@@ -104,11 +101,15 @@ btn_Ajout.addEventListener("click", () => {
 
 
     } else {
-        alert("Veuillez choissir une quantité entre 0 et 99 et une couleur à votre produit")
+        newDiv.textContent = "Veuillez choissir une quantité entre 0 et 99 et une couleur à votre produit"
+        newDiv.style.padding = "10px 0";
+        newDiv.style.color = "red";
+        newDiv.style.visibility = "visible";
+        setTimeout(function () {
+            newDiv.innerHTML = "";
+
+        }, 2000);
     };
-
-
-
 });
 
 
