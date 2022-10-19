@@ -23,7 +23,7 @@ function productsCart(product) {
 
         if (article.id == product[i]._id) {
 
-          article.price = product[i].price;
+          article.price = (new Intl.NumberFormat('de-DE').format(product[i].price));
           article.name = product[i].name;
           article.image = product[i].imageUrl;
           article.alt = product[i].altTxt;
@@ -47,7 +47,7 @@ let itemsCart = document.querySelector("#cart__items");
 
 function createProducts(product) {
 
-  itemsCart.innerHTML += product.map((article) =>  // Crée un nouveau tableau avec toutes les informations du produit // 
+  const HTMLArticles = product.map((article) =>  // Crée un nouveau tableau avec toutes les informations du produit // 
 
     `<article class="cart__item" data-id="${article.id}" data-color="${article.color}">
     <div class="cart__item__img">
@@ -71,6 +71,10 @@ function createProducts(product) {
     </div>
   </article>`);
 
+  for (let article of HTMLArticles) {
+    itemsCart.innerHTML += article
+
+  }
 }
 
 
@@ -95,6 +99,8 @@ function changeValueQuantity() {
           article.quantity = parseInt(param.target.value);
 
           localStorage.setItem("product", JSON.stringify(saveProducts))
+          valueQuantityTotal(saveProducts)
+          valuePriceTotal(saveProducts)
         }
       }
       /*location.reload()*/
@@ -111,18 +117,18 @@ function changeValueQuantity() {
 
 
 
-function valueQuantityTotal(param) {
+function valueQuantityTotal(productList) {
 
   let totalQuantity = document.querySelector("#totalQuantity");
 
   // On parcours notre tableau pour additionner la quantité // 
-  let total = param.reduce((acc, value) => {
+  let total = productList.reduce((acc, product) => {
 
-    acc = acc + value.quantity
+    acc = acc + product.quantity
     return acc
   }, 0);
 
-  totalQuantity.textContent += total;
+  totalQuantity.textContent = total;
 }
 
 function valuePriceTotal(param) {
@@ -135,7 +141,7 @@ function valuePriceTotal(param) {
 
   }, 0);
 
-  totalPrice.textContent += priceProduct;
+  totalPrice.textContent = priceProduct;
 }
 
 //-------------------------Ajout du bouton supprimer ------------------------//
@@ -243,7 +249,7 @@ formLastName.addEventListener('change', function () {
 
 });
 const validLastName = function (parametre) {
-  let lastNameRegExp = new RegExp('[A-z]{2,10}', 'g');
+  let lastNameRegExp = new RegExp('^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$', 'g');
 
   let testLastName = lastNameRegExp.test(parametre.value);
   let messageLastName = document.querySelector("#lastNameErrorMsg");
@@ -348,20 +354,9 @@ btn_cart.addEventListener("click", (e) => {
         return response.json();
       })
       .then(function (data) {
-        console.log("data", data)
-
-        let localStorageData = localStorage.getItem("nbOrderId")
-        let listOrderId = JSON.parse(localStorageData)
-
-        if (listOrderId == null) {
-          listOrderId = [];
-          listOrderId.push(data.orderId);
-        }
-
-        localStorage.setItem("nbOrderId", JSON.stringify(listOrderId))
+        console.log(data.orderId)
+        document.location.href = `./confirmation.html?numero=${data.orderId}`;
       })
-
-    document.location.href = "confirmation.html";
   }
 })
 

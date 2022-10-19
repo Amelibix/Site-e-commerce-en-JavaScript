@@ -24,7 +24,7 @@ async function getInitialData(url) {
 
     productName.textContent = article.name;
     productImage.innerHTML = `<img src="${article.imageUrl}" alt="${article.altTxt}" />`;
-    productPrice.textContent = article.price;
+    productPrice.textContent = new Intl.NumberFormat('de-DE').format(article.price);
     productDescription.textContent = article.description;
 
     for (let selectColor of article.colors)

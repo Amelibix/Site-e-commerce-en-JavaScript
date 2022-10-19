@@ -1,10 +1,12 @@
-let orderId = JSON.parse(localStorage.getItem("nbOrderId"));
+let params = new URLSearchParams(document.location.search).get("numero");
+console.log(params)
 
-for (let i in orderId) {
-    document.querySelector("#orderId").innerHTML = `<br>${orderId[i]}`;
-}
+
+document.querySelector("#orderId").innerHTML = `<br>${params}<br>Merci pour votre achat`;
+
 setTimeout(function () {
+
     document.location.href = "index.html";
-    localStorage.removeItem("nbOrderId");
+
     localStorage.removeItem("product");
 }, 15000);
