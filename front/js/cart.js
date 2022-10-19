@@ -29,6 +29,7 @@ function productsCart(product) {
           article.alt = product[i].altTxt;
         }
       }
+      itemsCart.innerHTML += createProducts(article)
     }
 
 
@@ -45,11 +46,9 @@ function productsCart(product) {
 
 let itemsCart = document.querySelector("#cart__items");
 
-function createProducts(product) {
+function createProducts(article) {
 
-  const HTMLArticles = product.map((article) =>  // Crée un nouveau tableau avec toutes les informations du produit // 
-
-    `<article class="cart__item" data-id="${article.id}" data-color="${article.color}">
+  return `<article class="cart__item" data-id="${article.id}" data-color="${article.color}">
     <div class="cart__item__img">
     <img src="${article.image}" alt="${article.alt}">
     </div>
@@ -69,12 +68,9 @@ function createProducts(product) {
         </div>
       </div>
     </div>
-  </article>`);
+  </article>`;
 
-  for (let article of HTMLArticles) {
-    itemsCart.innerHTML += article
 
-  }
 }
 
 
@@ -100,11 +96,11 @@ function changeValueQuantity() {
 
           localStorage.setItem("product", JSON.stringify(saveProducts))
           valueQuantityTotal(saveProducts)
-          valuePriceTotal(saveProducts)
+
         }
       }
       /*location.reload()*/
-      console.log(saveProducts)
+      console.log("changement de valeur", saveProducts)
 
 
     });
@@ -131,12 +127,12 @@ function valueQuantityTotal(productList) {
   totalQuantity.textContent = total;
 }
 
-function valuePriceTotal(param) {
+function valuePriceTotal(productList) {
 
   let totalPrice = document.querySelector("#totalPrice");
 
-  let priceProduct = param.reduce((acc, value) => {
-    acc += value.price * value.quantity
+  let priceProduct = productList.reduce((acc, product) => {
+    acc += product.price * product.quantity
     return acc
 
   }, 0);
