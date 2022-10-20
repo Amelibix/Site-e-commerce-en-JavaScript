@@ -1,50 +1,41 @@
 
-fetch("http://localhost:3000/api/products") // Récupération de l'API//
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
 
-    productsCart(data)
-  });
-
-
-
-function productsCart(product) {
-  let saveProducts = JSON.parse(localStorage.getItem("product")); //Récupération du LocalStorage // 
-
+async function listLocalStorageProduct() {
+  let saveProducts = JSON.parse(localStorage.getItem("product"))
+  let itemsCart = document.querySelector("#cart__items");
 
   if (saveProducts != 0) {
+    for (let article of saveProducts) {
 
-    for (article of saveProducts) {
+      let productData = await getProductById(article.id)
+      article.price = (new Intl.NumberFormat('de-DE').format(productData.price));
+      article.name = productData.name
+      article.image = productData.imageUrl
+      article.alt = productData.altTxt
 
-      //Mise en lien du tableau de l'API et du tableau du LocalStorage //
-      for (i = 0; i < product.length; i++) {
+      itemsCart.innerHTML += createProducts(article);
 
-        if (article.id == product[i]._id) {
 
-          article.price = (new Intl.NumberFormat('de-DE').format(product[i].price));
-          article.name = product[i].name;
-          article.image = product[i].imageUrl;
-          article.alt = product[i].altTxt;
-        }
-      }
-      itemsCart.innerHTML += createProducts(article)
     }
-
-
   } else {
     document.querySelector(".cartAndFormContainer").innerHTML = "<h1> Votre Panier est vide <br> Veillez retourner sur la page <a href ='index.html'>d'Acceuil</a></h1>"
   }
-  createProducts(saveProducts)
-  changeValueQuantity()
   valueQuantityTotal(saveProducts)
   valuePriceTotal(saveProducts)
+  changeValueQuantity(saveProducts)
   deleteItem()
 }
+listLocalStorageProduct()
 
+//-----Appel de l'API-----//
 
-let itemsCart = document.querySelector("#cart__items");
+async function getProductById(id) {
+  let url = `http://localhost:3000/api/products/${id}`;
+
+  let res = await fetch(url);
+  let product = await res.json();
+  return product;
+}
 
 function createProducts(article) {
 
@@ -69,8 +60,6 @@ function createProducts(article) {
       </div>
     </div>
   </article>`;
-
-
 }
 
 
@@ -96,13 +85,9 @@ function changeValueQuantity() {
 
           localStorage.setItem("product", JSON.stringify(saveProducts))
           valueQuantityTotal(saveProducts)
-
+          valuePriceTotal(saveProducts)
         }
       }
-      /*location.reload()*/
-      console.log("changement de valeur", saveProducts)
-
-
     });
   });
 }
@@ -127,17 +112,22 @@ function valueQuantityTotal(productList) {
   totalQuantity.textContent = total;
 }
 
-function valuePriceTotal(productList) {
 
-  let totalPrice = document.querySelector("#totalPrice");
 
-  let priceProduct = productList.reduce((acc, product) => {
-    acc += product.price * product.quantity
-    return acc
+async function valuePriceTotal(productList) {
 
-  }, 0);
 
-  totalPrice.textContent = priceProduct;
+  let totalPriceHtml = document.querySelector("#totalPrice");
+
+  let totalPrice = 0;
+  for (let product of productList) {
+
+    let articleList = await getProductById(product.id); //Utilise l'API pour récupérer le prix //
+
+    totalPrice += product.quantity * articleList.price;
+  }
+
+  totalPriceHtml.textContent = totalPrice;
 }
 
 //-------------------------Ajout du bouton supprimer ------------------------//
@@ -171,8 +161,9 @@ function deleteItem() {
 
       article.parentElement.removeChild(article) // Suprimer le DOM
 
+      valuePriceTotal(saveProducts)
+      valueQuantityTotal(saveProducts)
 
-      /*location.reload()*/
     });
   });
 }
@@ -324,6 +315,7 @@ btn_cart.addEventListener("click", (e) => {
     cartId.push(article.id)
   }
 
+  //Si toutes les valeurs du formulaires sont "vraies"//
   if (validEmail(formEmail) && validFirstName(formFirstName) && validLastName(formLastName) && validAddress(formAddress) && validCity(formCity)) {
 
     let values = {
@@ -350,7 +342,7 @@ btn_cart.addEventListener("click", (e) => {
         return response.json();
       })
       .then(function (data) {
-        console.log(data.orderId)
+
         document.location.href = `./confirmation.html?numero=${data.orderId}`;
       })
   }

@@ -1,5 +1,5 @@
 let params = new URLSearchParams(document.location.search).get("numero");
-console.log(params)
+
 
 
 document.querySelector("#orderId").innerHTML = `<br>${params}<br>Merci pour votre achat`;
