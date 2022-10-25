@@ -13,9 +13,7 @@ function getInitialData(url) {
             for (let valeur of data) {
 
                 document.querySelector('#items').innerHTML += createSingleProduct(valeur);
-
             }
-
         })
         .catch(function () {
             document.querySelector(".titles").innerHTML = "<h1> Erreur ! <br>Avez vous bien lancé le serveur local ? </h1>";

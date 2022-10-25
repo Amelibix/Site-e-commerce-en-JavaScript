@@ -127,7 +127,7 @@ async function valuePriceTotal(productList) {
     totalPrice += product.quantity * articleList.price;
   }
 
-  totalPriceHtml.textContent = totalPrice;
+  totalPriceHtml.textContent = (new Intl.NumberFormat('de-DE').format(totalPrice));
 }
 
 //-------------------------Ajout du bouton supprimer ------------------------//
@@ -155,9 +155,6 @@ function deleteItem() {
 
       localStorage.setItem("product", JSON.stringify(saveProducts))
 
-      console.log(saveProducts)
-      console.log(foundProduct)
-
 
       article.parentElement.removeChild(article) // Suprimer le DOM
 
@@ -177,7 +174,7 @@ const formLastName = document.querySelector("#lastName");
 const formAddress = document.querySelector("#address");
 const formCity = document.querySelector("#city");
 const formEmail = document.querySelector("#email")
-const btn_cart = document.querySelector("#order")
+
 
 // Ecouter la modification de l'email //
 
@@ -188,7 +185,7 @@ formEmail.addEventListener('change', function () {
 
 const validEmail = function (parametre) {
 
-  let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
+  let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,30}$', 'g');
 
   let testEmail = emailRegExp.test(parametre.value);
   let messageEmail = document.querySelector("#emailErrorMsg");
@@ -212,7 +209,7 @@ formFirstName.addEventListener('change', function () {
 
 });
 const validFirstName = function (parametre) {
-  let firstNameRegExp = new RegExp('^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$', 'g');
+  let firstNameRegExp = new RegExp(/^[A-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/, 'g');
 
   let testFristName = firstNameRegExp.test(parametre.value);
   let messageFirstName = document.querySelector("#firstNameErrorMsg");
@@ -236,7 +233,7 @@ formLastName.addEventListener('change', function () {
 
 });
 const validLastName = function (parametre) {
-  let lastNameRegExp = new RegExp('^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$', 'g');
+  let lastNameRegExp = new RegExp(/^[A-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/, 'g');
 
   let testLastName = lastNameRegExp.test(parametre.value);
   let messageLastName = document.querySelector("#lastNameErrorMsg");
@@ -259,7 +256,7 @@ formAddress.addEventListener('change', function () {
 
 });
 const validAddress = function (parametre) {
-  let adressRegExp = new RegExp('[A-z]{5,10}', 'g');
+  let adressRegExp = new RegExp(/^[A-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/, 'g');
 
   let testAddress = adressRegExp.test(parametre.value);
   let messageAddress = document.querySelector("#addressErrorMsg");
@@ -283,7 +280,7 @@ formCity.addEventListener('change', function () {
 
 });
 const validCity = function (parametre) {
-  let cityRegExp = new RegExp('[A-z]{2,10}', 'g');
+  let cityRegExp = new RegExp(/^[A-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/, 'g');
 
   let testCity = cityRegExp.test(parametre.value);
   let messageCity = document.querySelector("#cityErrorMsg");
@@ -304,50 +301,53 @@ const validCity = function (parametre) {
 
 // On recupères les informations dans un objet // 
 
+function productOrder() {
+  const btn_cart = document.querySelector("#order")
 
-btn_cart.addEventListener("click", (e) => {
-  e.preventDefault();
+  btn_cart.addEventListener("click", (e) => {
+    e.preventDefault();
 
-  let saveProducts = JSON.parse(localStorage.getItem("product"));
-  let cartId = [];
+    let saveProducts = JSON.parse(localStorage.getItem("product"));
+    let cartId = [];
 
-  for (let article of saveProducts) {
-    cartId.push(article.id)
-  }
+    for (let article of saveProducts) {
+      cartId.push(article.id)
+    }
 
-  //Si toutes les valeurs du formulaires sont "vraies"//
-  if (validEmail(formEmail) && validFirstName(formFirstName) && validLastName(formLastName) && validAddress(formAddress) && validCity(formCity)) {
+    //Si toutes les valeurs du formulaires sont "vraies"//
+    if (validEmail(formEmail) && validFirstName(formFirstName) && validLastName(formLastName) && validAddress(formAddress) && validCity(formCity)) {
 
-    let values = {
-      contact: {
-        firstName: formFirstName.value,
-        lastName: formLastName.value,
-        address: formAddress.value,
-        city: formCity.value,
-        email: formEmail.value,
-      },
-      products: cartId,
-    };
+      let values = {
+        contact: {
+          firstName: formFirstName.value,
+          lastName: formLastName.value,
+          address: formAddress.value,
+          city: formCity.value,
+          email: formEmail.value,
+        },
+        products: cartId,
+      };
 
-    // Envoie à l'API // 
+      // Envoie à l'API // 
 
-    fetch("http://localhost:3000/api/products/order", {
-      method: "POST",
-      body: JSON.stringify(values),
-      headers: {
-        "Content-Type": "application/json"
-      },
-    })
-      .then(function (response) {
-        return response.json();
+      fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+          "Content-Type": "application/json"
+        },
       })
-      .then(function (data) {
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
 
-        document.location.href = `./confirmation.html?numero=${data.orderId}`;
-      })
-  }
-})
-
+          document.location.href = `./confirmation.html?numero=${data.orderId}`;
+        })
+    }
+  })
+}
+productOrder()
 
 
 
