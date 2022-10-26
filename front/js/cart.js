@@ -4,7 +4,7 @@ async function listLocalStorageProduct() {
   let saveProducts = JSON.parse(localStorage.getItem("product"))
   let itemsCart = document.querySelector("#cart__items");
 
-  if (saveProducts != 0) {
+  if (saveProducts != null) {
     for (let article of saveProducts) {
 
       let productData = await getProductById(article.id)
@@ -18,10 +18,10 @@ async function listLocalStorageProduct() {
 
     }
   } else {
-    document.querySelector(".cartAndFormContainer").innerHTML = "<h1> Votre Panier est vide <br> Veillez retourner sur la page <a href ='index.html'>d'Acceuil</a></h1>"
+    document.querySelector(".cartAndFormContainer").innerHTML = "<h1> Votre Panier est vide <br> Veuillez retourner sur la page <a href ='index.html'>d'Acceuil</a></h1>"
   }
-  valueQuantityTotal(saveProducts)
-  valuePriceTotal(saveProducts)
+  computeTotalQuantity(saveProducts)
+  computeTotalPrice(saveProducts)
   changeValueQuantity(saveProducts)
   deleteItem()
 }
@@ -84,8 +84,8 @@ function changeValueQuantity() {
           article.quantity = parseInt(param.target.value);
 
           localStorage.setItem("product", JSON.stringify(saveProducts))
-          valueQuantityTotal(saveProducts)
-          valuePriceTotal(saveProducts)
+          computeTotalQuantity(saveProducts)
+          computeTotalPrice(saveProducts)
         }
       }
     });
@@ -98,7 +98,7 @@ function changeValueQuantity() {
 
 
 
-function valueQuantityTotal(productList) {
+function computeTotalQuantity(productList) {
 
   let totalQuantity = document.querySelector("#totalQuantity");
 
@@ -114,7 +114,7 @@ function valueQuantityTotal(productList) {
 
 
 
-async function valuePriceTotal(productList) {
+async function computeTotalPrice(productList) {
 
 
   let totalPriceHtml = document.querySelector("#totalPrice");
@@ -158,8 +158,8 @@ function deleteItem() {
 
       article.parentElement.removeChild(article) // Suprimer le DOM
 
-      valuePriceTotal(saveProducts)
-      valueQuantityTotal(saveProducts)
+      computeTotalPrice(saveProducts)
+      computeTotalQuantity(saveProducts)
 
     });
   });
